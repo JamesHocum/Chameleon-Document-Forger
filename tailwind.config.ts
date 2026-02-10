@@ -10,6 +10,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-inter)', 'sans-serif'],
+        mono: ['var(--font-jetbrains)', 'monospace'],
+      },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -50,6 +54,11 @@ const config: Config = {
           '3': 'hsl(var(--chart-3))',
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
+        },
+        neon: {
+          green: 'hsl(var(--neon-green))',
+          pink: 'hsl(var(--neon-pink))',
+          cyan: 'hsl(var(--neon-cyan))',
         },
         sidebar: {
           DEFAULT: 'hsl(var(--sidebar-background))',
