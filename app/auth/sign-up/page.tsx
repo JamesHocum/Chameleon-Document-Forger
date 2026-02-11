@@ -31,7 +31,7 @@ export default function SignUpPage() {
     }
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -41,7 +41,15 @@ export default function SignUpPage() {
         },
       })
       if (error) throw error
-      router.push('/auth/sign-up-success')
+
+      // Check if the user was auto-confirmed (no email confirmation required)
+      // If session exists, they're confirmed and we can go straight to the editor
+      if (data.session) {
+        router.push('/editor')
+      } else {
+        // Email confirmation is required -- show the check-email page
+        router.push('/auth/sign-up-success')
+      }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
