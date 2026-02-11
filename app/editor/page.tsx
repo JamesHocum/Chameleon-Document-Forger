@@ -1,9 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 import useSWR, { mutate as globalMutate } from 'swr'
-import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { DocumentSidebar } from '@/components/editor/document-sidebar'
@@ -22,7 +20,6 @@ interface Document {
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
 
 export default function EditorPage() {
-  const router = useRouter()
   const [activeDocId, setActiveDocId] = useState<string | null>(null)
   const [isEditMode, setIsEditMode] = useState(false)
   const [localLines, setLocalLines] = useState<string[]>([])
@@ -30,13 +27,11 @@ export default function EditorPage() {
   const [isSaving, setIsSaving] = useState(false)
   const [showUpload, setShowUpload] = useState(false)
 
-  // Fetch document list
   const { data: documents = [], isLoading: isLoadingDocs } = useSWR<Document[]>(
     '/api/documents',
     fetcher,
   )
 
-  // Fetch active document
   const { data: activeDoc } = useSWR<Document>(
     activeDocId ? `/api/documents/${activeDocId}` : null,
     fetcher,
@@ -57,7 +52,7 @@ export default function EditorPage() {
   }, [])
 
   const handleLineEdit = useCallback(
-    (lineIndex: number, oldText: string, newText: string) => {
+    (lineIndex: number, _oldText: string, newText: string) => {
       setLocalLines((prev) => {
         const updated = [...prev]
         updated[lineIndex] = newText
@@ -163,15 +158,8 @@ export default function EditorPage() {
     [activeDocId],
   )
 
-  const handleSignOut = useCallback(async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/auth/login')
-  }, [router])
-
   return (
     <div className="flex h-svh overflow-hidden bg-background">
-      {/* Sidebar */}
       <DocumentSidebar
         documents={documents}
         activeDocId={activeDocId}
@@ -179,11 +167,9 @@ export default function EditorPage() {
         onUpload={() => setShowUpload(true)}
         onNewDoc={handleNewDoc}
         onDelete={handleDelete}
-        onSignOut={handleSignOut}
         isLoading={isLoadingDocs}
       />
 
-      {/* Main editor area */}
       <main className="flex flex-1 flex-col overflow-hidden">
         <EditorHeader
           filename={activeDoc?.filename ?? null}
@@ -225,7 +211,6 @@ export default function EditorPage() {
         </div>
       </main>
 
-      {/* Upload Dialog */}
       <UploadDialog
         open={showUpload}
         onOpenChange={setShowUpload}

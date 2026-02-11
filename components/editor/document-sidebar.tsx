@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { FileText, Plus, Trash2, Upload, LogOut } from 'lucide-react'
+import { FileText, Plus, Trash2, Upload } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface Document {
@@ -19,7 +19,6 @@ interface DocumentSidebarProps {
   onUpload: () => void
   onNewDoc: () => void
   onDelete: (id: string) => void
-  onSignOut: () => void
   isLoading: boolean
 }
 
@@ -30,7 +29,6 @@ export function DocumentSidebar({
   onUpload,
   onNewDoc,
   onDelete,
-  onSignOut,
   isLoading,
 }: DocumentSidebarProps) {
   return (
@@ -108,19 +106,6 @@ export function DocumentSidebar({
           )}
         </div>
       </ScrollArea>
-
-      {/* Sign out */}
-      <div className="border-t border-border px-3 py-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onSignOut}
-          className="w-full gap-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 text-xs"
-        >
-          <LogOut className="h-3.5 w-3.5" />
-          Sign Out
-        </Button>
-      </div>
     </aside>
   )
 }

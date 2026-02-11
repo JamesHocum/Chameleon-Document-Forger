@@ -1,15 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
+const ANON_USER_ID = '00000000-0000-0000-0000-000000000000'
+
 export async function POST(request: Request) {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
 
   const formData = await request.formData()
   const file = formData.get('file') as File | null
@@ -21,7 +16,6 @@ export async function POST(request: Request) {
   const filename = file.name
   let content = ''
 
-  // Handle text files directly
   if (
     file.type === 'text/plain' ||
     filename.endsWith('.txt') ||
@@ -37,7 +31,6 @@ export async function POST(request: Request) {
   ) {
     content = await file.text()
   } else {
-    // For unsupported file types, return an error
     return NextResponse.json(
       {
         error:
@@ -47,11 +40,10 @@ export async function POST(request: Request) {
     )
   }
 
-  // Save to documents table
   const { data, error } = await supabase
     .from('documents')
     .insert({
-      user_id: user.id,
+      user_id: ANON_USER_ID,
       filename,
       content,
     })

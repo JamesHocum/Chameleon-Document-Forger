@@ -1,20 +1,15 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
+const ANON_USER_ID = '00000000-0000-0000-0000-000000000000'
+
 export async function GET() {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
 
   const { data, error } = await supabase
     .from('documents')
     .select('id, filename, created_at, updated_at')
-    .eq('user_id', user.id)
+    .eq('user_id', ANON_USER_ID)
     .order('updated_at', { ascending: false })
 
   if (error) {
@@ -26,13 +21,6 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
 
   const body = await request.json()
   const { filename, content } = body
@@ -46,7 +34,7 @@ export async function POST(request: Request) {
 
   const { data, error } = await supabase
     .from('documents')
-    .insert({ user_id: user.id, filename, content })
+    .insert({ user_id: ANON_USER_ID, filename, content })
     .select()
     .single()
 

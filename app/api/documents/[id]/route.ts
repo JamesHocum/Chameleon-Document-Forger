@@ -1,26 +1,20 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
+const ANON_USER_ID = '00000000-0000-0000-0000-000000000000'
+
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
   const { id } = await params
 
   const { data, error } = await supabase
     .from('documents')
     .select('*')
     .eq('id', id)
-    .eq('user_id', user.id)
+    .eq('user_id', ANON_USER_ID)
     .single()
 
   if (error) {
@@ -35,14 +29,6 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
   const { id } = await params
   const body = await request.json()
   const { content, line_number, old_text, new_text } = body
@@ -51,7 +37,7 @@ export async function PATCH(
     .from('documents')
     .update({ content, updated_at: new Date().toISOString() })
     .eq('id', id)
-    .eq('user_id', user.id)
+    .eq('user_id', ANON_USER_ID)
     .select()
     .single()
 
@@ -63,7 +49,7 @@ export async function PATCH(
   if (line_number !== undefined) {
     await supabase.from('edit_history').insert({
       document_id: id,
-      user_id: user.id,
+      user_id: ANON_USER_ID,
       line_number,
       old_text: old_text || '',
       new_text: new_text || '',
@@ -78,21 +64,13 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
   const { id } = await params
 
   const { error } = await supabase
     .from('documents')
     .delete()
     .eq('id', id)
-    .eq('user_id', user.id)
+    .eq('user_id', ANON_USER_ID)
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
