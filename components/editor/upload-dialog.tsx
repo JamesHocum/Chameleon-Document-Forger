@@ -64,7 +64,7 @@ export function UploadDialog({
             Upload Document
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            Drag and drop or browse for a text file.
+            Drag and drop or browse for a PDF or text file.
           </DialogDescription>
         </DialogHeader>
 
@@ -93,7 +93,7 @@ export function UploadDialog({
             </Button>
           </div>
           <p className="text-xs text-muted-foreground">
-            Supports: .txt, .md, .csv, .json, .xml, .html, .css, .js, .ts, .py
+            Supports: .pdf, .txt, .md, .csv, .json, .xml, .html, .css, .js, .ts, .py
           </p>
         </div>
 
@@ -104,7 +104,7 @@ export function UploadDialog({
         <input
           ref={fileInputRef}
           type="file"
-          accept=".txt,.md,.csv,.json,.xml,.html,.css,.js,.ts,.py"
+          accept=".pdf,.txt,.md,.csv,.json,.xml,.html,.css,.js,.ts,.py"
           className="hidden"
           onChange={(e) => {
             const file = e.target.files?.[0]
