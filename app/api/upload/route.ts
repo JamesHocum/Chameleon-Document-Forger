@@ -29,6 +29,8 @@ export async function POST(request: Request) {
   }
 
   const filename = file.name
+  const ext = filename.split('.').pop()?.toLowerCase() || 'txt'
+  const fileType = ext
   let content = ''
 
   try {
