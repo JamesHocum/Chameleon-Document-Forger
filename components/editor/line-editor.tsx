@@ -4,15 +4,16 @@ import React from "react"
 
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { cn } from '@/lib/utils'
-import { Check, X, Pencil } from 'lucide-react'
+import { Check, X, Pencil, Trash2 } from 'lucide-react'
 
 interface LineEditorProps {
   lines: string[]
   onLineEdit: (lineIndex: number, oldText: string, newText: string) => void
+  onDeleteLine: (lineIndex: number) => void
   isEditMode: boolean
 }
 
-export function LineEditor({ lines, onLineEdit, isEditMode }: LineEditorProps) {
+export function LineEditor({ lines, onLineEdit, onDeleteLine, isEditMode }: LineEditorProps) {
   const [editingLine, setEditingLine] = useState<number | null>(null)
   const [editValue, setEditValue] = useState('')
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -121,6 +122,17 @@ export function LineEditor({ lines, onLineEdit, isEditMode }: LineEditorProps) {
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onDeleteLine(index)
+                    setEditingLine(null)
+                  }}
+                  className="rounded p-1 text-muted-foreground hover:bg-destructive/20 hover:text-destructive transition-colors"
+                  aria-label="Delete entire line"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
               </div>
             </div>
           ) : (
@@ -136,10 +148,25 @@ export function LineEditor({ lines, onLineEdit, isEditMode }: LineEditorProps) {
               <span className="flex-1 whitespace-pre-wrap break-all">
                 {line || '\u00A0'}
               </span>
-              {isEditMode && (
-                <Pencil className="mt-0.5 h-3 w-3 shrink-0 text-muted-foreground/0 group-hover:text-muted-foreground transition-colors" />
-              )}
             </button>
+            {isEditMode && editingLine !== index && (
+              <div className="flex shrink-0 items-center gap-0.5 pr-1">
+                <span className="mt-0.5 text-muted-foreground/0 group-hover:text-muted-foreground transition-colors">
+                  <Pencil className="h-3 w-3" />
+                </span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onDeleteLine(index)
+                  }}
+                  className="rounded p-1 text-muted-foreground/0 group-hover:text-muted-foreground hover:!text-destructive hover:bg-destructive/20 transition-colors"
+                  aria-label={`Delete line ${index + 1}`}
+                >
+                  <Trash2 className="h-3 w-3" />
+                </button>
+              </div>
+            )}
           )}
         </div>
       ))}

@@ -63,6 +63,20 @@ export default function EditorPage() {
     [],
   )
 
+  const handleDeleteLine = useCallback(
+    (lineIndex: number) => {
+      setLocalLines((prev) => {
+        const updated = [...prev]
+        updated.splice(lineIndex, 1)
+        // Keep at least one empty line so the editor isn't blank
+        if (updated.length === 0) return ['']
+        return updated
+      })
+      setHasChanges(true)
+    },
+    [],
+  )
+
   const handleSave = useCallback(async () => {
     if (!activeDocId || !hasChanges) return
     setIsSaving(true)
@@ -187,6 +201,7 @@ export default function EditorPage() {
                 <LineEditor
                   lines={localLines}
                   onLineEdit={handleLineEdit}
+                  onDeleteLine={handleDeleteLine}
                   isEditMode={isEditMode}
                 />
               </div>
