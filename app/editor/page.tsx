@@ -12,6 +12,7 @@ import { UploadDialog } from '@/components/editor/upload-dialog'
 interface Document {
   id: string
   filename: string
+  file_type: string
   content: string
   created_at: string
   updated_at: string
@@ -187,6 +188,8 @@ export default function EditorPage() {
       <main className="flex flex-1 flex-col overflow-hidden">
         <EditorHeader
           filename={activeDoc?.filename ?? null}
+          fileType={activeDoc?.file_type ?? null}
+          documentId={activeDocId}
           isEditMode={isEditMode}
           onToggleEdit={() => setIsEditMode((prev) => !prev)}
           onSave={handleSave}

@@ -8,7 +8,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from('documents')
-    .select('id, filename, created_at, updated_at')
+    .select('id, filename, file_type, created_at, updated_at')
     .eq('user_id', ANON_USER_ID)
     .order('updated_at', { ascending: false })
 
@@ -32,9 +32,11 @@ export async function POST(request: Request) {
     )
   }
 
+  const ext = filename.split('.').pop()?.toLowerCase() || 'txt'
+
   const { data, error } = await supabase
     .from('documents')
-    .insert({ user_id: ANON_USER_ID, filename, content })
+    .insert({ user_id: ANON_USER_ID, filename, file_type: ext, content })
     .select()
     .single()
 

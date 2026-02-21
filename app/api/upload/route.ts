@@ -69,6 +69,7 @@ export async function POST(request: Request) {
     .insert({
       user_id: ANON_USER_ID,
       filename,
+      file_type: fileType,
       content,
     })
     .select()
