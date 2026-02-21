@@ -136,37 +136,39 @@ export function LineEditor({ lines, onLineEdit, onDeleteLine, isEditMode }: Line
               </div>
             </div>
           ) : (
-            <button
-              type="button"
-              onClick={() => handleLineClick(index)}
-              className={cn(
-                'flex flex-1 items-start gap-2 px-3 py-1 text-left transition-colors',
-                isEditMode && 'hover:text-neon-cyan',
-              )}
-              disabled={!isEditMode}
-            >
-              <span className="flex-1 whitespace-pre-wrap break-all">
-                {line || '\u00A0'}
-              </span>
-            </button>
-            {isEditMode && editingLine !== index && (
-              <div className="flex shrink-0 items-center gap-0.5 pr-1">
-                <span className="mt-0.5 text-muted-foreground/0 group-hover:text-muted-foreground transition-colors">
-                  <Pencil className="h-3 w-3" />
+            <>
+              <button
+                type="button"
+                onClick={() => handleLineClick(index)}
+                className={cn(
+                  'flex flex-1 items-start gap-2 px-3 py-1 text-left transition-colors',
+                  isEditMode && 'hover:text-neon-cyan',
+                )}
+                disabled={!isEditMode}
+              >
+                <span className="flex-1 whitespace-pre-wrap break-all">
+                  {line || '\u00A0'}
                 </span>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onDeleteLine(index)
-                  }}
-                  className="rounded p-1 text-muted-foreground/0 group-hover:text-muted-foreground hover:!text-destructive hover:bg-destructive/20 transition-colors"
-                  aria-label={`Delete line ${index + 1}`}
-                >
-                  <Trash2 className="h-3 w-3" />
-                </button>
-              </div>
-            )}
+              </button>
+              {isEditMode && editingLine !== index && (
+                <div className="flex shrink-0 items-center gap-0.5 pr-1">
+                  <span className="mt-0.5 text-muted-foreground/0 group-hover:text-muted-foreground transition-colors">
+                    <Pencil className="h-3 w-3" />
+                  </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onDeleteLine(index)
+                    }}
+                    className="rounded p-1 text-muted-foreground/0 group-hover:text-muted-foreground hover:!text-destructive hover:bg-destructive/20 transition-colors"
+                    aria-label={`Delete line ${index + 1}`}
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       ))}
