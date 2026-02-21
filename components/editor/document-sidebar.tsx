@@ -75,12 +75,19 @@ export function DocumentSidebar({
             </p>
           ) : (
             documents.map((doc) => (
-              <button
+              <div
                 key={doc.id}
-                type="button"
+                role="button"
+                tabIndex={0}
                 onClick={() => onSelect(doc.id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    onSelect(doc.id)
+                  }
+                }}
                 className={cn(
-                  'group flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-sm transition-colors',
+                  'group flex w-full cursor-pointer items-center gap-2 rounded-md px-2.5 py-2 text-left text-sm transition-colors',
                   activeDocId === doc.id
                     ? 'bg-primary/10 text-primary neon-box'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground',
@@ -101,7 +108,7 @@ export function DocumentSidebar({
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
-              </button>
+              </div>
             ))
           )}
         </div>
